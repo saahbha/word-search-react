@@ -1,0 +1,26 @@
+.Puzzle {
+  display: flex;
+  justify-content: flex-start;
+  text-align: center;
+  --cellDim: 1.5em;
+}
+
+.Letter {
+  position: relative;
+  width: var(--cellDim);
+  line-height: var(--cellDim);
+  outline: 1px solid black;
+}
+
+.Index {
+  position: relative;
+  width: var(--cellDim);
+  outline: 1px solid black;
+
+  font-size: 70%;
+  background-color: rgba(85, 85, 85, 0.212);
+}
+
+.Letter:hover {
+  cursor: pointer;
+}
