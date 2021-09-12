@@ -31,7 +31,20 @@ class App extends Component {
 
   componentDidMount() {
     let initState = this.state;
-    initState.words = ["Purdue", 'hey', 'yeh', 'zop', 'poz', 'don', 'nod', 'mnd', 'aor'];
+    initState.words = [
+      "Purdue", 
+      "Eudrup",
+      "Hey",
+      "Yeh",
+      "Zop",
+      "Poz",
+      "Don",
+      "Nod",
+      "Mnd",
+      "Dnm",
+      "Aor",
+      "Roa"
+    ];
     initState.letters = [
         ['D','R','L','B','V','W','R'],
         ['P','E','E','K','P','E','E'],
@@ -78,6 +91,18 @@ class App extends Component {
 
   handleSelectedProblemChange(newProblem) {
     let newState = this.state;
+    newState.letters = newProblem.letters;
+    newState.words = newProblem.words;
+
+    let emptyColors = Array(newState.letters.length);
+    for (let row = 0; row < newState.letters.length; row++) {
+      emptyColors[row] = Array(newState.letters[row].length);
+      for (let col = 0; col < newState.letters[row].length; col++) {
+        emptyColors[row][col] = '';
+      }
+    }
+    newState.colors = emptyColors;
+
     this.setState(newState);
   }
 

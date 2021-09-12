@@ -1,33 +1,54 @@
 import React, { Component } from "react";
 import Form from "react-bootstrap/Form";
 
+import defaultProblem from "../problems/default.txt";
+import codinglanguages from "../problems/coding-languages.txt";
+import famousArtists from "../problems/famous-artists.txt";
+import famousBooks from "../problems/famous-books.txt";
+
 class ProblemControls extends Component {
   constructor(props) {
     super(props);
 
     this.handleSelectedProblemChange =
       this.handleSelectedProblemChange.bind(this);
-
-    this.state = {};
   }
 
-  handleSelectedProblemChange(event) {
-    const file = event.target.value;
+  async handleSelectedProblemChange(event) {
+    let problem = await this.getTextFrom(event.target.value);
+    problem = this.parseTextToProblem(problem);
 
-    let request = new XMLHttpRequest();
-    request.open("GET", file, true);
-    request.send(null);
-    request.onreadystatechange = function () {
-      if (request.readyState === 4 && request.status === 200) {
-        let type = request.getResponseHeader("Content-Type");
-        if (type.indexOf("text") !== 1) {
-          let text = request.responseText;
-          console.log(text);
-        }
-      }
-    };
+    this.props.onSelectedProblemChange(problem);
+  }
 
-    this.props.onSelectedProblemChange(event);
+  async getTextFrom(location) {
+    let response = await fetch(location)
+      .then((response) => response.text())
+      .catch((err) => console.log(err));
+    return response;
+  }
+
+  parseTextToProblem(text) {
+    let lines = text.split("\n");
+
+    let letterGrid = [];
+    let i = 0;
+    do {
+      let letters = lines[i].trim().split("");
+      letterGrid.push(letters);
+      i++;
+    } while (!/^\s*$/.test(lines[i]));
+    i++;
+    let words = [];
+    do {
+      let word = lines[i].trim();
+      words.push(word);
+      i++;
+    } while (lines[i] && lines[i].trim());
+    let problem = {};
+    problem.letters = letterGrid;
+    problem.words = words;
+    return problem;
   }
 
   render() {
@@ -36,10 +57,10 @@ class ProblemControls extends Component {
         aria-label="Problem Selector"
         onChange={this.handleSelectedProblemChange}
       >
-        <option value="">Default</option>
-        <option value="">Coding Languages</option>
-        <option value="">Famous Artists</option>
-        <option value="">Famous Books</option>
+        <option value={defaultProblem}>Default</option>
+        <option value={codinglanguages}>Coding Languages</option>
+        <option value={famousArtists}>Famous Artists</option>
+        <option value={famousBooks}>Famous Books</option>
       </Form.Select>
     );
   }
