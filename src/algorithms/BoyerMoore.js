@@ -50,7 +50,7 @@ function BoyerMooreFind(T, P, colors, dir, x, directions, dim){
             j = m - 1;
 
             //start over 
-            colors = emptyColors(colors, dim);
+            //colors = emptyColors(colors, dim);
             if (!(i > n - 1)) {
                 //color the selection grey
                 colors = selection(dir, x, i, m, directions, dim, colors);
@@ -62,7 +62,7 @@ function BoyerMooreFind(T, P, colors, dir, x, directions, dim){
 }
 
 function selection(dir, x, i, m, directions, dim, frames) {
-    let newFrame = JSON.parse(JSON.stringify(frames[frames.length-1]));
+    let newFrame = JSON.parse(JSON.stringify(frames[0]));
     for (let index = i; index >= (i - m + 1); index--) {
         let coords = WordSearch.stringCoordsToGridCoords(dir, x, index, directions, dim);
         let row = coords[0];

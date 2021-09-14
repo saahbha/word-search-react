@@ -1,6 +1,7 @@
 .Puzzle {
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   --cellDim: 1.5em;
 }

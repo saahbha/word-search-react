@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Form from "react-bootstrap/Form";
+import Card from "react-bootstrap/Card";
 
 import defaultProblem from "../problems/default.txt";
 import codinglanguages from "../problems/coding-languages.txt";
@@ -17,7 +18,6 @@ class ProblemControls extends Component {
   async handleSelectedProblemChange(event) {
     let problem = await this.getTextFrom(event.target.value);
     problem = this.parseTextToProblem(problem);
-
     this.props.onSelectedProblemChange(problem);
   }
 
@@ -53,15 +53,26 @@ class ProblemControls extends Component {
 
   render() {
     return (
-      <Form.Select
-        aria-label="Problem Selector"
-        onChange={this.handleSelectedProblemChange}
-      >
-        <option value={defaultProblem}>Default</option>
-        <option value={codinglanguages}>Coding Languages</option>
-        <option value={famousArtists}>Famous Artists</option>
-        <option value={famousBooks}>Famous Books</option>
-      </Form.Select>
+      <Card>
+        <Card.Header>Problem Controls</Card.Header>
+        <Card.Body>
+          <Card.Title>Problem Selector</Card.Title>
+          <Card.Text>
+            Use the select menu below to change the problem. Right now there are
+            only 4 problems to choose from. But soon you'll be able to create
+            your own!
+          </Card.Text>
+          <Form.Select
+            aria-label="Problem Selector"
+            onChange={this.handleSelectedProblemChange}
+          >
+            <option value={defaultProblem}>Default</option>
+            <option value={codinglanguages}>Coding Languages</option>
+            <option value={famousArtists}>Famous Artists</option>
+            <option value={famousBooks}>Famous Books</option>
+          </Form.Select>
+        </Card.Body>
+      </Card>
     );
   }
 }

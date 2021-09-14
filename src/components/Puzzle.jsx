@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Puzzle.css";
+import Card from "react-bootstrap/Card";
 
 class Puzzle extends Component {
   constructor(props) {
@@ -29,7 +30,18 @@ class Puzzle extends Component {
         </table>
       </div>
     );
-    return <>{grid}</>;
+    return (
+      <Card>
+        <Card.Header>Puzzle Grid</Card.Header>
+        <Card.Body>
+          <Card.Text>
+            Here's the word search puzzle! Press the start search button to
+            watch the computer find a word in this puzzle.
+          </Card.Text>
+          <>{grid}</>
+        </Card.Body>
+      </Card>
+    );
   }
 }
 
