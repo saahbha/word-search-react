@@ -26,21 +26,27 @@ class App extends Component {
     this.handleSelectedWordChange = this.handleSelectedWordChange.bind(this);
     this.handleSelectedProblemChange = this.handleSelectedProblemChange.bind(this);
 
-    this.state = {
-      words: [],
-      letters: [[]],
-      colors: [[]],
-      speed: 400,
-      selectedWord: '',
-      searching: false,
-      shouldShow: false,
-    };
+    this.setColor = this.setColor.bind(this);
 
-    this.animator;
+    this.state = this.initState();
   }
 
   componentDidMount() {
-    let initState = this.state;
+    this.setState(this.initState());
+  }
+
+  initState() {
+    let initState = {
+      words: [],
+      letters: [[]],
+      colors: [[]],
+      selectedWord: '',
+      speed: 0,
+      selectedWord: '',
+      shouldShow: false,
+      animator: [],
+      searching: false,
+    };
     initState.words = [
       "Purdue", 
       "Eudrup",
@@ -63,20 +69,19 @@ class App extends Component {
         ['L','E','Z','D','N','M','O'],
         ['Y','D','N','I','U','E','B'],
         ['I','O','P','H','H','E','Y'],
-      ];
-      initState.colors = Array(initState.letters.length);
-      for (let row = 0; row < initState.colors.length; row++) {
-        initState.colors[row] = Array(initState.letters[row].length);
-        for (let col = 0; col < initState.letters[row].length; col++) {
-          initState.colors[row][col] = '';
-        }
-      }
-      initState.selectedWord = initState.words[0];
-      this.setState(initState);
+    ];
+    initState.colors = this.emptyColors(initState.letters);
+    initState.selectedWord = initState.words[0];
+    initState.speed = 400;
+    initState.shouldShow = false;
+    initState.animator = [];
+    initState.searching = false;
+    return initState;
   }
 
   handleHide() {
-    let newState = this.state;
+    this.handleStopSearch();
+    let newState = this.initState();
     newState.shouldShow = false;
     this.setState(newState);
   }
@@ -88,54 +93,73 @@ class App extends Component {
   }
 
   handleStartSearch() {
+    this.handleStopSearch();
     let target = this.state.selectedWord.toUpperCase().split(" ").join("");
     const animation = WordSearch.find(this.state.letters, target);
     
     if (this.state.speed == 500) {
-      let newState = this.state;
-      newState.colors = animation[animation.length-1];
-      this.setState(newState);
+      this.setColor(animation[animation.length-1]);
     } else {
+      let newState = this.state;
+      newState.searching = true;
       for (let i = 0; i < animation.length; i++) {
-        this.animator = setTimeout( () => {
-          let newState = this.state;
-          newState.colors = animation[i];
-          this.setState(newState);
-        }, (500-this.state.speed)*i);      
+        newState.animator.push(setTimeout( () => {
+          this.setColor(animation[i]);
+          if (i == animation.length-1) {
+            let finishedSearchingState = this.state;
+            finishedSearchingState.searching = false;
+            this.setState(finishedSearchingState)
+          }
+        }, (500-this.state.speed)*i));      
       }
+      this.setState(newState);
     }
   }
 
-  //never called, not being used for now
-  handleStopSearch() {
-    clearTimeout(this.animator);
+  setColor(frame) {
     let newState = this.state;
+    newState.colors = frame;
+    this.setState(newState);
+  }
 
-    let emptyColors = Array(newState.letters.length);
-    for (let row = 0; row < newState.letters.length; row++) {
-      emptyColors[row] = Array(newState.letters[row].length);
-      for (let col = 0; col < newState.letters[row].length; col++) {
-        emptyColors[row][col] = '';
-      }
+  handleStopSearch() {
+    let newState = this.state;
+    newState.searching = false;
+    for (let frame = 0; frame < newState.animator.length; frame++) {
+      clearTimeout(newState.animator[frame]);
     }
-    newState.colors = emptyColors;
+    newState.colors = this.emptyColors(newState.letters);
 
     this.setState(newState);
   }
 
+  emptyColors(letters) {
+    let emptyColors = Array(letters.length);
+    for (let row = 0; row < letters.length; row++) {
+      emptyColors[row] = Array(letters[row].length);
+      for (let col = 0; col < letters[row].length; col++) {
+        emptyColors[row][col] = '';
+      }
+    }
+    return emptyColors;
+  }
+
   handleSpeedChange(newSpeed) {
+    this.handleStopSearch();
     let newState = this.state;
     newState.speed = newSpeed;
     this.setState(newState);
   }
 
   handleSelectedWordChange(newWord) {
+    this.handleStopSearch();
     let newState = this.state;
     newState.selectedWord = newWord;
     this.setState(newState);
   }
 
   handleSelectedProblemChange(newProblem) {
+    this.handleStopSearch();
     let newState = this.state;
     newState.letters = newProblem.letters;
     newState.words = newProblem.words;
@@ -156,7 +180,7 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <Button onClick={this.handleShow}>Run Word Search React App</Button>
+        <Button onClick={this.handleShow}>Launch Word Search React App</Button>
         <Modal
           size="lg"
           show={this.state.shouldShow}
@@ -181,10 +205,12 @@ class App extends Component {
                     <SearchControls
                       words = {this.state.words}
                       speed = {this.state.speed}
+                      searching = {this.state.searching}
                       selectedWord = {this.state.selectedWord}
                       onSelectedWordChange = {this.handleSelectedWordChange}
                       onSpeedChange = {this.handleSpeedChange}
                       onStartSearch = {this.handleStartSearch}
+                      onStopSearch = {this.handleStopSearch}
                     />
                 </Col>
                 <Col>

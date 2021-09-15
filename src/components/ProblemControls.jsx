@@ -5,7 +5,10 @@ import Card from "react-bootstrap/Card";
 import defaultProblem from "../problems/default.txt";
 import codinglanguages from "../problems/coding-languages.txt";
 import famousArtists from "../problems/famous-artists.txt";
-import famousBooks from "../problems/famous-books.txt";
+import americanRevolution from "../problems/american-revolution.txt";
+import carMakes from "../problems/car-makes.txt";
+import greekHistory from "../problems/greek-history.txt";
+import narutoCharacters from "../problems/naruto-characters.txt";
 
 class ProblemControls extends Component {
   constructor(props) {
@@ -58,18 +61,21 @@ class ProblemControls extends Component {
         <Card.Body>
           <Card.Title>Problem Selector</Card.Title>
           <Card.Text>
-            Use the select menu below to change the problem. Right now there are
-            only 4 problems to choose from. But soon you'll be able to create
-            your own!
+            Use the select menu below to change the problem.
           </Card.Text>
           <Form.Select
             aria-label="Problem Selector"
             onChange={this.handleSelectedProblemChange}
           >
-            <option value={defaultProblem}>Default</option>
-            <option value={codinglanguages}>Coding Languages</option>
-            <option value={famousArtists}>Famous Artists</option>
-            <option value={famousBooks}>Famous Books</option>
+            <option value={defaultProblem}>Default (7x7)</option>
+            <option value={codinglanguages}>Coding Languages (11x11)</option>
+            <option value={narutoCharacters}>Naruto Characters (12x12)</option>
+            <option value={carMakes}>Car Makes (15x15)</option>
+            <option value={americanRevolution}>
+              American Revolution (21x21)
+            </option>
+            <option value={greekHistory}>Greek History (22x22)</option>
+            <option value={famousArtists}>Famous Artists (24x24)</option>
           </Form.Select>
         </Card.Body>
       </Card>

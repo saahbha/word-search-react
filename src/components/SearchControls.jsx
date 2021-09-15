@@ -8,6 +8,7 @@ class SearchControls extends Component {
     super(props);
 
     this.handleStartSearch = this.handleStartSearch.bind(this);
+    this.handleStopSearch = this.handleStopSearch.bind(this);
     this.handleSpeedChange = this.handleSpeedChange.bind(this);
     this.handleSelectedWordChange = this.handleSelectedWordChange.bind(this);
 
@@ -15,11 +16,24 @@ class SearchControls extends Component {
       speed: this.props.speed,
       words: this.props.words,
       selectedWord: this.props.selectedWord,
+      searching: this.props.searching,
     };
   }
 
   handleStartSearch() {
+    let newState = this.state;
+    newState.searching = true;
+    this.setState(newState);
+
     this.props.onStartSearch();
+  }
+
+  handleStopSearch() {
+    let newState = this.state;
+    newState.searching = false;
+    this.setState(newState);
+
+    this.props.onStopSearch();
   }
 
   handleSpeedChange(event) {
@@ -31,6 +45,21 @@ class SearchControls extends Component {
   }
 
   render() {
+    let button;
+    if (this.props.searching) {
+      button = (
+        <Button variant="danger" onClick={this.handleStopSearch}>
+          End Search
+        </Button>
+      );
+    } else {
+      button = (
+        <Button variant="primary" onClick={this.handleStartSearch}>
+          Start Search
+        </Button>
+      );
+    }
+
     return (
       <Card>
         <Card.Header>Search Controls</Card.Header>
@@ -58,7 +87,8 @@ class SearchControls extends Component {
           <Card.Title className="mt-3">Speed</Card.Title>
           <Card.Text>
             Pick how fast the computer should be. Move the slider all the way to
-            the right to solve the problem instantly.
+            the right to solve the problem instantly. For larger problems and/or
+            smaller words, I recommend using higher speeds.
           </Card.Text>
           <>
             <Form.Range
@@ -69,13 +99,9 @@ class SearchControls extends Component {
               onChange={this.handleSpeedChange}
             />
           </>
-          <Card.Title>Start Search</Card.Title>
+          <Card.Title>Search</Card.Title>
           <Card.Text>Watch how the computer solves the puzzle!</Card.Text>
-          <>
-            <Button variant="primary" onClick={this.handleStartSearch}>
-              Start Search
-            </Button>
-          </>
+          <>{button}</>
         </Card.Body>
       </Card>
     );
