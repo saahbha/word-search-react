@@ -4,11 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+let element = document.getElementById('saahbha-word-search');
+if (element == null) element = document.getElementById('root');
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  element
 );
 
 // If you want to start measuring performance in your app, pass a function
